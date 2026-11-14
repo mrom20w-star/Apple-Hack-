@@ -1,0 +1,6 @@
+{
+  "name": "GUARDIOLA SCRIPT V17 — Electric Cyan",
+  "description": "GUARDIOLA V17 - تطبيق التوقعات الرسمي الخاص بلعبة Apple of Fortune",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
