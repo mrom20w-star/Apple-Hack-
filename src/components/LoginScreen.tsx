@@ -32,14 +32,20 @@ export function LoginScreen({ selectedPlatform, onSelectPlatform, onSubmit }: Lo
     event.preventDefault();
     if (authenticating || showInvalidCode) return;
 
+    const isValidId = /^\d{10}$/.test(playerId);
+    if (!isValidId) {
+      playSound('error');
+      setErrorMsg('معرف اللاعب يجب أن يكون مكوناً من 10 أرقام');
+      return;
+    }
+
     playSound('scan');
     setErrorMsg(null);
     setAuthenticating(true);
 
-    const isValidId = playerId.length >= 9 && playerId.length <= 10;
     const isValidPassword = accessCode.trim().toUpperCase() === PROMO_CODE;
 
-    if (isValidId && isValidPassword) {
+    if (isValidPassword) {
       try {
         window.localStorage.setItem('guardiola_player_id', playerId);
         window.localStorage.setItem('apple_hack_platform', selectedPlatform);
@@ -57,12 +63,8 @@ export function LoginScreen({ selectedPlatform, onSelectPlatform, onSubmit }: Lo
     setTimeout(() => {
       setAuthenticating(false);
       playSound('error');
-      if (isValidId) {
-        setShowInvalidCode(true);
-        setAccessCode('');
-      } else {
-        setErrorMsg('معرف اللاعب غير صحيح أو ناقص');
-      }
+      setShowInvalidCode(true);
+      setAccessCode('');
     }, 1400);
   };
 
@@ -139,12 +141,15 @@ export function LoginScreen({ selectedPlatform, onSelectPlatform, onSubmit }: Lo
               id="id-input"
               type="text"
               inputMode="numeric"
-              pattern="[0-9]*"
+              pattern="[0-9]{10}"
               maxLength={10}
               autoComplete="off"
               value={playerId}
-              onChange={(e) => setPlayerId(e.target.value.replace(/\D/g, '').slice(0, 10))}
-              placeholder="أدخل الـ ID"
+              onChange={(e) => {
+                setPlayerId(e.target.value.replace(/\D/g, '').slice(0, 10));
+                if (errorMsg) setErrorMsg(null);
+              }}
+              placeholder="أدخل الـ ID (10 أرقام)"
             />
             <UserRound size={18} />
             <span className="field-corner" />
